@@ -1,0 +1,11 @@
+# Libro técnico
+Machine Learning with Scikit Learn and TensorFlow.pdf
+# Devin
+.devin
+# Credenciales
+.env
+
+# Archivos generados
+__pycache__/
+*.py[cod]
+chroma_ml_book/

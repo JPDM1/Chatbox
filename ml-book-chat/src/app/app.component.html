@@ -1,0 +1,133 @@
+<!-- ML Book Chat Dashboard -->
+
+<div class="page-bg">
+
+  <header class="topbar">
+    <div class="topbar__brand">
+      <img class="topbar__logo" src="evolve.jpg" alt="Evolve" />
+      <span class="topbar__title">ML Book Chat</span>
+    </div>
+    <span class="topbar__badge">RAG · Gemini · LangGraph</span>
+  </header>
+
+  <main class="main">
+
+    @if (isOpen()) {
+      <section class="chat-window">
+
+        <div class="chat-header">
+          <div class="chat-header__info">
+            <span class="chat-header__avatar">🤖</span>
+            <div>
+              <p class="chat-header__name">Asistente ML</p>
+              <p class="chat-header__sub">Experto en Scikit-Learn & TensorFlow</p>
+            </div>
+          </div>
+          <div class="chat-header__actions">
+            <button class="icon-btn" title="Limpiar conversación" (click)="clearMessages()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14H6L5 6"/>
+                <path d="M10 11v6M14 11v6"/>
+                <path d="M9 6V4h6v2"/>
+              </svg>
+            </button>
+            <button class="icon-btn" title="Minimizar" (click)="minimizeChat()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+            </button>
+            <button class="icon-btn icon-btn--close" title="Cerrar" (click)="closeChat()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="chat-messages">
+          @for (msg of messages(); track $index) {
+            <div class="msg" [class.msg--user]="msg.role === 'user'" [class.msg--bot]="msg.role === 'bot'">
+              @if (msg.role === 'bot') {
+                <span class="msg__avatar">🤖</span>
+              }
+              <div class="msg__bubble">
+                <p class="msg__text">{{ msg.text }}</p>
+                <span class="msg__time">{{ msg.timestamp | date:'HH:mm' }}</span>
+              </div>
+              @if (msg.role === 'user') {
+                <span class="msg__avatar msg__avatar--user">👤</span>
+              }
+            </div>
+          }
+
+          @if (loading()) {
+            <div class="msg msg--bot">
+              <span class="msg__avatar">🤖</span>
+              <div class="msg__bubble msg__bubble--typing">
+                <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+              </div>
+            </div>
+          }
+
+          <div #messagesEnd></div>
+        </div>
+
+        <div class="chat-input">
+          <textarea
+            class="chat-input__field"
+            [(ngModel)]="inputText"
+            (keydown)="onKeyDown($event)"
+            [disabled]="loading()"
+            placeholder="Pregunta sobre ML, Scikit-Learn, TensorFlow... (Enter para enviar)"
+            rows="1"
+          ></textarea>
+          <button
+            class="send-btn"
+            [disabled]="loading() || !inputText.trim()"
+            (click)="sendMessage()"
+            title="Enviar mensaje"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
+            </svg>
+          </button>
+        </div>
+
+      </section>
+    }
+
+    @if (isMinimized()) {
+      <div class="chat-minimized">
+        <span>🤖 Asistente ML</span>
+        <div class="chat-minimized__actions">
+          <button class="icon-btn" title="Maximizar" (click)="maximizeChat()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="15 3 21 3 21 9"/>
+              <polyline points="9 21 3 21 3 15"/>
+              <line x1="21" y1="3" x2="14" y2="10"/>
+              <line x1="3" y1="21" x2="10" y2="14"/>
+            </svg>
+          </button>
+          <button class="icon-btn icon-btn--close" title="Cerrar" (click)="closeChat()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    }
+
+    @if (isClosed()) {
+      <button class="fab" title="Abrir chat" (click)="openChat()">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+        </svg>
+        <span>Preguntar sobre ML</span>
+      </button>
+    }
+
+  </main>
+</div>
